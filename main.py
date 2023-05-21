@@ -6,6 +6,7 @@ import random
 
 from mirai import Image
 import logging
+import traceback
 
 
 # 注册插件
@@ -28,20 +29,22 @@ class NahidaPlugin(Plugin):
     @on(PersonMessageReceived)
     @on(GroupMessageReceived)
     def _(self, event: EventContext, host: PluginHost, message_chain, **kwargs):
-        text = str(message_chain).strip()
-        if text == "nahida" or text == "nhd":
-            # 发送图片
-            image_url = random.choice(self.images_urls)
-            
-            if kwargs["launcher_type"] == "group":
-                host.send_group_message(kwargs["launcher_id"], Image(url=image_url))
-            else:
-                host.send_person_message(kwargs["launcher_id"], Image(url=image_url))
+        try:
+            text = str(message_chain).strip()
+            if text == "nahida" or text == "nhd":
+                event.prevent_default()
+                event.prevent_postorder()
+                # 发送图片
+                image_url = random.choice(self.images_urls)
+                
+                if kwargs["launcher_type"] == "group":
+                    host.send_group_message(kwargs["launcher_id"], Image(url=image_url))
+                else:
+                    host.send_person_message(kwargs["launcher_id"], Image(url=image_url))
 
-            event.prevent_default()
-            event.prevent_postorder()
-
-            logging.info("Nahida!")
+                logging.info("Nahida!")
+        except Exception as e:
+            logging.error(traceback.format_exc())
 
     # 插件卸载时触发
     def __del__(self):
