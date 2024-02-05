@@ -38,9 +38,9 @@ class NahidaPlugin(Plugin):
                 image_url = random.choice(self.images_urls)
                 
                 if kwargs["launcher_type"] == "group":
-                    host.send_group_message(kwargs["launcher_id"], Image(url=image_url))
+                    host.send_group_message(kwargs["launcher_id"], [Image(url=image_url)])
                 else:
-                    host.send_person_message(kwargs["launcher_id"], Image(url=image_url))
+                    host.send_person_message(kwargs["launcher_id"], [Image(url=image_url)])
 
                 logging.info("Nahida!")
         except Exception as e:
